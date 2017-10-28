@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
 const familySchema = new Schema({
   _id: {
@@ -17,4 +17,4 @@ const familySchema = new Schema({
   graduated: Boolean
 });
 
-mongoose.model('family', familySchema);
+module.exports = mongoose.model('family', familySchema);

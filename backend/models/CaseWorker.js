@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
 const caseWorkerSchema = new Schema({
   _id: {
@@ -11,4 +11,4 @@ const caseWorkerSchema = new Schema({
   price: Number
 });
 
-mongoose.model('caseWorker', caseWorkerSchema);
+module.exports = mongoose.model('caseWorker', caseWorkerSchema);

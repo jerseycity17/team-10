@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
 const billsSchema = new Schema({
   _id: {
@@ -11,4 +11,5 @@ const billsSchema = new Schema({
   price: Number
 });
 
-mongoose.model('bills', billsSchema);
+
+module.exports = mongoose.model('bills', billsSchema);
