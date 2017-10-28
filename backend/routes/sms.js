@@ -23,6 +23,7 @@ module.exports = (app)=> {
     if (err)
       console.log(err);
     });
+    res.send();
   });
 
 
@@ -32,5 +33,6 @@ module.exports = (app)=> {
       to: req.body.phone,  // Text this number
       from: keys.number
   })
+  res.send():
 })
 };
