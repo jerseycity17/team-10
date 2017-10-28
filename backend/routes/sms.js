@@ -33,6 +33,6 @@ module.exports = (app)=> {
       to: req.body.phone,  // Text this number
       from: keys.number
   })
-  res.send():
+  res.send();
 })
 };
