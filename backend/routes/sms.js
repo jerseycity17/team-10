@@ -7,7 +7,7 @@ var family = require('../models/Family');
 var text = require('../models/Text');
 const keys = require('../config/keys');
 
-module.exports = (app,twilioClient)=> {
+module.exports = (app)=> {
   var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
 
   app.post('/sms', (req, res) => {
@@ -23,6 +23,7 @@ module.exports = (app,twilioClient)=> {
     if (err)
       console.log(err);
     });
+    res.send();
   });
 
 
@@ -32,5 +33,6 @@ module.exports = (app,twilioClient)=> {
       to: req.body.phone,  // Text this number
       from: keys.number
   })
+  res.send():
 })
 };
