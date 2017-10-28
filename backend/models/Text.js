@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const textSchema = new Schema({
-  textId: Number,
+  _id: {
+    type: Number,
+    required: true
+  },
   primaryPhone: String,
   text: String
 });

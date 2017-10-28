@@ -6,13 +6,12 @@ const passport = require('passport');
 
 const keys = require('./config/keys');
 require('./models/User');
-require('./models/Bills');
+var Bill = require('./models/Bills');
 require('./models/CaseWorker');
 require('./models/Family');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
-
 
 //twilio set up
 var twilioClient= new twilio(keys.TwilioSID,keys.Twiliotoken);
