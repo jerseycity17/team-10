@@ -1,14 +1,43 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
+const twilio = require('twilio');
 const passport = require('passport');
+const smsresponse= twilio.twiml.MessagingResponse;
+const morgan = require('morgan');
+const bodyParser= require('body-parser');
 const keys = require('./config/keys');
+const app = express():
 require('./models/User');
+var Bill = require('./models/Bills');
+require('./models/CaseWorker');
+require('./models/Family');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
+var twilioClient= new twilio(keys.TwilioSID,keys.Twiliotoken);
 
-const app = express();
+<<<<<<< HEAD
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+app.post('/sms',(req,res)=>{
+  const number = req.from;
+  const message = req.body;
+
+});
+=======
+>>>>>>> 53004f8bad021530cbc9b3048bf0d9046da41806
+//twilio set up
+
+//
+// twilioClient.messages.create({
+//     body: 'Hello from Node',
+//     to: '+19294351864',  // Text this number
+//     from: keys.number
+// })
+// .then((message) => console.log(message.sid));
+
 
 app.use(
   cookieSession({
@@ -22,5 +51,5 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT);
