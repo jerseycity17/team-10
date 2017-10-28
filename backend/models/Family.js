@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const familySchema = new Schema({
-  familyId: Number,
+  _id: {
+    type: Number,
+    required: true
+  },
   caseWorkerId: Number,
   houseHead: String,
   primaryPhone: String,
