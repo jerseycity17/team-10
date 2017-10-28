@@ -24,6 +24,18 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
+app.post('/bill', (req, res) => {
+  var newBill = new Bill();
+  newBill.familyId = req.body.familyId;
+  newBill.bill = req.body.bill;
+  newBill.price = req.body.price;
+  newBill.save(err => {
+    if (err)
+      console.log(err);
+  });
+  res.send({ success: true });
+});
+
 
 app.post('/sms', (req, res) => {
   const number = req.From;
