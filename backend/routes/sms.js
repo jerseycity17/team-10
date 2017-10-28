@@ -7,7 +7,7 @@ var family = require('../models/Family');
 var text = require('../models/Text');
 const keys = require('../config/keys');
 
-module.exports = (app,twilioClient)=> {
+module.exports = (app)=> {
   var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
 
   app.post('/sms', (req, res) => {

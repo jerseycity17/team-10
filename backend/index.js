@@ -19,7 +19,7 @@ const smsresponse = twilio.twiml.MessagingResponse;
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
-var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
@@ -39,7 +39,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-require('./routes/sms')(app,twilioClient);
+require('./routes/sms')(app);
+require('./routes/call')(app);
 require('./routes/authRoutes')(app);
 
 const PORT = process.env.PORT || 8080;
