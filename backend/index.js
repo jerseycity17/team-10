@@ -38,13 +38,15 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-require('./routes/sms')(app);
-require('./routes/call')(app);
+
 
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+
+require('./routes/sms')(app);
+require('./routes/call')(app);
 
 app.post('/bill', (req, res) => {
   const newBill = new Bill();

@@ -9,10 +9,17 @@ const voiceResponse = twilio.twiml.VoiceResponse;
 const syedNumber = "347-801-3874";
 module.exports = (app)=> {
   var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
+
   app.post('/call', (req, res) => {
 
     let number= "";
     let caseId="";
+
+
+    //The function below will search for the case worker of whos calling
+    //if it cant find one, it will call a default number
+    //which in this case is the variable syedNumber
+
     family.find({phone: req.body.From}, (err, caseWorkerId) => {
       if(err)
         return console.log(err);
@@ -24,8 +31,9 @@ module.exports = (app)=> {
       number=phone.phone;
     });
 
-    const response = new voiceResponse();
 
+    const response = new voiceResponse();
+    console.log(response);
     const dial=response.dial();
     dial.number(number||syedNumber);
     res.send(response.toString());
