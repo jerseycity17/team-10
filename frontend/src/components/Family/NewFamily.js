@@ -4,6 +4,7 @@ import './Family.css';
 
 // include styles
 import 'rodal/lib/rodal.css';
+import './NewFamily.css';
 
 export class NewFamily extends React.Component {
 
@@ -120,7 +121,7 @@ export class NewFamily extends React.Component {
         return (
             <div>
 
-              <div className="well card-5 col-md-1" style={{marginLeft: 20, marginRight: 20}} onClick={this.show.bind(this)}>
+              <div className="well card-3 col-md-1" style={{marginLeft: 20, marginRight: 20, borderRadius: "50%"}} onClick={this.show.bind(this)}>
                 <i className="fa fa-users" aria-hidden="true"></i> New Family
               </div>
 

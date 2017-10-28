@@ -13,7 +13,17 @@ export class TextMessages extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
           enterMessage: "",
+          messages: [],
           visible: false };
+    }
+
+    componentDidMount() {
+      var self = this;
+      fetch("http://localhost:8080/text/" + self.props.family.primaryPhone)
+        .then(res => res.json())
+        .then(data => this.setState({
+          messages: data
+        }));
     }
 
     show() {
@@ -47,6 +57,10 @@ export class TextMessages extends React.Component {
     }
 
     render() {
+        const messages = this.state.messages.map(message => {
+          return <div className="alert alert-success">{message.text}</div>
+        })
+        console.log(this.state.messages)
         return (
             <div>
 
@@ -55,6 +69,9 @@ export class TextMessages extends React.Component {
               </div>
 
                 <Rodal animation="rotate" visible={this.state.visible} onClose={this.hide.bind(this)}>
+                  <div style={{margin: 20}}>
+                    {messages}
+                  </div>
                   <div>
                   {this.state.enterMessage}
                   <div className="input-group">
@@ -64,7 +81,7 @@ export class TextMessages extends React.Component {
                         <input onChange={this.onChange} id="msg" type="text" class="form-control" name="msg" placeholder="Send Message"/>
                       </div>
                       <div className="col-md-4">
-                        <button onClick={this.handleSubmit} style={{padding: 4}}>Send</button>
+                        <button style={{width: 200}} onClick={this.handleSubmit} style={{padding: 4}}>Send</button>
                       </div>
                     </div>
                   </div>
