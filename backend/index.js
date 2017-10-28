@@ -62,11 +62,13 @@ app.post('/bill', (req, res) => {
   });
 });
 
+
+/*
 const familyRoute= require('./routes/family');
 const billRoute=require('./routes/bill');
 const caseRoute=require('./routes/caseWorker');
 const textRoute=require('./routes/text');
-
+*/
 
 
 

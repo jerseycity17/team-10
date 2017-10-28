@@ -11,7 +11,7 @@ var User = require("../models/user");
   var textControl = require('../controllers/textController');
   var familyControl = require('../controllers/familyController');
   var billControl = require('../controllers/billsController');
- var workerControl = require('../controllers/caseworkerController');
+  var workerControl = require('../controllers/caseworkerController');
 
 router.post('/signup', function(req, res) {
   if (!req.body.username || !req.body.password) {
@@ -32,8 +32,6 @@ router.post('/signup', function(req, res) {
 });
 
 
-
-
 router.get('/URL', passport.authenticate('jwt', { session: false}), function(req, res) {
   var token = getToken(req.headers);
   if (token) {  } else {
@@ -41,10 +39,100 @@ router.get('/URL', passport.authenticate('jwt', { session: false}), function(req
   }
 });
 
+//Family routes------------------
+router.get('/family', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { familyControl.list_all_families } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
 
+router.post('/family', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { familyControl.add_family } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
 
+router.get('/family/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { familyControl.get_family } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
 
-)
+router.delete('/family/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { familyControl.delete_family } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+//-------------------------------------------
+
+//caseWorker routes-------------------------------
+router.get('/worker', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { workerControl.list_all_workers } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
+router.post('/worker', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { workerControl.add_a_worker } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
+router.get('/worker/:caseWorkerId', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { workerControl.list_a_worker } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+//----------------------------------------------
+
+//Bill routes-----------------------------------------
+router.get('/bills', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { billControl.list_all_bills } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
+router.get('/bills', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { billControl.add_a_bill } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
+router.get('/bills/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { billControl.list_someones_bills } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+//----------------------------------------------------
+
+//Text routes-------------------------------------------------
+router.get('/text/:primePhoneId', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) { textControl.get_texts } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+//-----------------------------------------------------
+
+router.get('/U', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) {  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
+//---------------------------------------------------
+
 router.post('/signin', function(req, res) {
   User.findOne({
     username: req.body.username
