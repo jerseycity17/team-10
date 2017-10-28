@@ -2,6 +2,7 @@ import React from 'react';
 import Rodal from 'rodal';
 import { TextMessages } from './TextMessages';
 import { VoiceTranscripts } from './VoiceTranscripts';
+import { NewFamily } from './NewFamily';
 import './Family.css';
 
 // include styles

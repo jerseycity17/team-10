@@ -9,7 +9,11 @@ export class TextMessages extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { visible: false };
+        this.onChange = this.onChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = {
+          enterMessage: "",
+          visible: false };
     }
 
     show() {
@@ -18,6 +22,28 @@ export class TextMessages extends React.Component {
 
     hide() {
         this.setState({ visible: false });
+    }
+
+    onChange(e) {
+      var self = this;
+      this.setState({
+        enterMessage: e.target.value
+      })
+    }
+
+    handleSubmit() {
+      var self = this;
+      fetch("http://localhost:8080/sendsms", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify ({
+          message: self.state.enterMessage,
+          phone: "+" + self.props.family.primaryPhone
+        })
+      })
     }
 
     render() {
@@ -29,13 +55,20 @@ export class TextMessages extends React.Component {
               </div>
 
                 <Rodal animation="rotate" visible={this.state.visible} onClose={this.hide.bind(this)}>
-                    <div>House Head: {this.props.family.houseHead}</div>
-                    <div>Employment Status: {this.props.family.employment ? "Employed" : "Not Employed"}</div>
-                    <div>Graduation Status: {this.props.family.employment ? "Graduated" : "Not Graduated"}</div>
-                    <div>Email: {this.props.family.email}</div>
-                    <div>Primary Phone: {this.props.family.primaryPhone}</div>
-                    <div>Secondary Phone: {this.props.family.secondaryPhone}</div>
-                    <div>Case Worker Id: {this.props.family.caseWorker}</div>
+                  <div>
+                  {this.state.enterMessage}
+                  <div className="input-group">
+                    <span className="input-group-addon">Text</span>
+                    <div className="row">
+                      <div className="col-md-8">
+                        <input onChange={this.onChange} id="msg" type="text" class="form-control" name="msg" placeholder="Send Message"/>
+                      </div>
+                      <div className="col-md-4">
+                        <button onClick={this.handleSubmit} style={{padding: 4}}>Send</button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
                 </Rodal>
             </div>
         )

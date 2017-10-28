@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import {ModalExample} from '../components/ModalExample';
 import {Family} from '../components/Family/Family';
+import {NewFamily} from '../components/Family/NewFamily';
 import './FamilyPage.css';
 
 class FamilyPage extends Component {
@@ -26,8 +27,9 @@ class FamilyPage extends Component {
     return(
       <div>
         <div style={{fontSize: 20, marginBottom: 50}} className="welcome card-3 text-center well col-md-6 col-md-offset-2">
-          Welcome, Name Here!
+          Welcome to the Caseworker Admin Client
         </div>
+        <NewFamily />
         <div onClick={() => this.props.history.push('/login')} style={{fontSize: 20, marginLeft: 20, borderRadius: "50%", color: "red"}} className="logout well card-3 col-md-1">
           <i className="fa fa-power-off" aria-hidden="true"></i> Log Out
         </div>
