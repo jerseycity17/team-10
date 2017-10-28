@@ -2,19 +2,16 @@
 import Dashboard from './Dashboard';
 import authClient from './authClient';
 import React from 'react';
-import { jsonServerRestClient, Admin, Resource } from 'admin-on-rest';
+import { Admin, Resource } from 'admin-on-rest';
 
 import { PostList, PostShow } from './posts';
 import { FamilyList, FamilyShow } from './family';
 import restClient from './restClient'
-import { PostList } from './posts';
-
 
 import FamilyIcon from 'material-ui/svg-icons/social/group';
 
 const App = () => (
-    <Admin title="Family Promise Admin" authClient = {authClient} restClient={restClient}>
-        <Resource name="posts" list={PostList} show={PostShow} />
+    <Admin title="Family Promise Admin" authClient = {authClient} restClient={restClient('http://localhost:8080')}>
         <Resource name="family" list={FamilyList} show={FamilyShow} icon={FamilyIcon}/>
     </Admin>
 );

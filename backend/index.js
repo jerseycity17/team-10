@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const twilio = require('twilio');
 const passport = require('passport');
 
@@ -9,24 +9,42 @@ const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 const app = express();
 
-var user = require('./models/User');
-var Bill = require('./models/Bills');
-var worker = require('./models/CaseWorker');
-var family = require('./models/Family');
-var text = require('./models/Text')
-
+const user = require('./models/User');
+const Bill = require('./models/Bills');
+const worker = require('./models/CaseWorker');
+const family = require('./models/Family');
+const text = require('./models/Text')
+const familyRoute= require('./routes/family')(app);
 const smsresponse = twilio.twiml.MessagingResponse;
-require('./services/passport');
+
+require('./services/passport')(passport);
 
 mongoose.connect(keys.mongoURI);
 
+
+app.use(session({
+    secret: keys.cookieKey, // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+
+
+function isLoggedIn(req, res, next) {
+
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated())
+    return next();
+
+  // if they aren't redirect them to the home page
+  res.send('ERROR::::: You are not Logged in ');
+};
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
 app.post('/bill', (req, res) => {
-  var newBill = new Bill();
+  const newBill = new Bill();
   newBill.familyId = req.body.familyId;
   newBill.bill = req.body.bill;
   newBill.price = req.body.price;
@@ -34,26 +52,38 @@ app.post('/bill', (req, res) => {
     if (err)
       console.log(err);
   });
-  res.send({ success: true });
+  res.send({
+    success: true
+  });
 });
 
 
-//twilio set up
+app.get('/profile',isLoggedIn, familyRoute);
+app.get('/fail',(req,res)=>{
+  res.send('User or Password doesnt match. Please try again....')
+});
+app.get('/failsign',(req,res)=>{
+  res.send('User or Password already exist');
+});
+
+app.post('/login', passport.authenticate('local-login', {
+  successRedirect: '/profile', // redirect to the secure profile section
+  failureRedirect: '/fail', // redirect back to the signup page if there is an error
+  failureFlash: true // allow flash messages
+}));
 
 
+app.post('/signup', passport.authenticate('local-signup', {
+  successRedirect: '/profile', // redirect to the secure profile section
+  failureRedirect: '/failsign', // redirect back to the signup page if there is an error
+  failureFlash: true // allow flash messages
+}));
 
-app.use(
-  cookieSession({
-    maxAge: (30 * 24 * 3600 * 1000),
-    keys: [keys.cookieKey]
-  })
-);
 
 app.use(passport.initialize());
 app.use(passport.session());
 require('./routes/sms')(app);
 require('./routes/call')(app);
-require('./routes/authRoutes')(app);
 require('./routes/family')(app);
 
 const PORT = process.env.PORT || 8080;
