@@ -53,6 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./routes/sms')(app,twilioClient);
 require('./routes/authRoutes')(app);
+require('./routes/family')(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
