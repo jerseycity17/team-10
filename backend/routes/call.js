@@ -7,55 +7,69 @@ var text = require('../models/Text');
 const keys = require('../config/keys');
 const voiceResponse = twilio.twiml.VoiceResponse;
 const syedNumber = "347-801-3874";
-module.exports = (app)=> {
+module.exports = (app) => {
   var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
 
   app.post('/call', (req, res) => {
 
-    let number= "";
-    let caseId="";
+    let number = "";
+    let caseId = "";
     //The function below will search for the case worker of whos calling
     //if it cant find one, it will call a default number
     //which in this case is the variable syedNumber
-    family.find({phone: req.body.From}, (err, caseWorkerId) => {
-      if(err)
+    family.find({
+      phone: req.body.From
+    }, (err, caseWorkerId) => {
+      if (err)
         return console.log(err);
-      caseId=caseWorkerId.caseWorkerId;
+      caseId = caseWorkerId.caseWorkerId;
     });
-    worker.find({caseWorkerId: caseId}, (err, phone)=>{
-      if(err)
+    worker.find({
+      caseWorkerId: caseId
+    }, (err, phone) => {
+      if (err)
         return console.log(err);
-      number=phone.phone;
+      number = phone.phone;
     });
 
 
     const response = new voiceResponse();
-    response.record({
+    if (typeof req.body.RecordingUrl !== 'undefined') {
+      response.hangup();
+    } else {
+    const dial = response.dial({
+      record:"record-from-answer-dual",
       transcribe: true,
-      timeout: 300,
-    
+      transcribeCallback: '/transcribe'
+    });
+    dial.number(syedNumber);
+    res.status(200);
+    res.send(response.toString());
+    }
     });
 
-    console.log(response);
-    const dial=response.dial();
-    dial.number(number||syedNumber);
-    res.send(response.toString());
-  });
+
+
+  app.post('/transcribe', (request, response) => {
+    var text = request.body.TranscriptionText;
+    var callSid = require.body.CallSid;
+    response.sendStatus(200);
+    })
 
   //for know,
   //in the future(in like 4-5 hours)
   //the robotic message should be send thru req.body
-  app.post('/sendcall',(req,res)=>{
+  app.post('/sendcall', (req, res) => {
     console.log(req.body.text);
-    let message =req.body.text;
-    message=message.replace(/ /g,"%20");
-    const xmlURL= ['http://twimlets.com/echo?Twiml=%3CResponse%3E%0A%3CSay%20voice%3D%22alice%22%3E','%3C%2FSay%3E%0A%3C%2FResponse%3E&'];
-    const finalxml=xmlURL[0]+message+xmlURL[1];
+    let message = req.body.text;
+    message = message.replace(/ /g, "%20");
+    const xmlURL = ['http://twimlets.com/echo?Twiml=%3CResponse%3E%0A%3CSay%20voice%3D%22alice%22%3E', '%3C%2FSay%3E%0A%3C%2FResponse%3E&'];
+    const finalxml = xmlURL[0] + message + xmlURL[1];
     twilioClient.api.calls.create({
       url: finalxml,
-      to: req.body.phone,  // Text this number
+      to: req.body.phone, // Text this number
       from: keys.number
+    })
+    res.send();
   })
-  res.send();
-})
 };
