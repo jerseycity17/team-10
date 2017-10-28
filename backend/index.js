@@ -1,12 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
+const twilio = require('twilio');
 const passport = require('passport');
+
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
+
+
+//twilio set up
+var twilioClient= new twilio(keys.TwilioSID,keys.Twiliotoken);
+
+twilioClient.messages.create({
+    body: 'Hello from Node',
+    to: '+19294351864',  // Text this number
+    from: keys.number
+})
+.then((message) => console.log(message.sid));
 
 const app = express();
 
