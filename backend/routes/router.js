@@ -39,28 +39,28 @@ router.post('/signup', function(req, res) {
 // });
 
 //Family routes------------------
-router.get('/family', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/family', function(req, res) {
   var token = getToken(req.headers);
   if (token) { familyControl.list_all_families } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.post('/family', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.post('/family',  function(req, res) {
   var token = getToken(req.headers);
   if (token) { familyControl.add_family } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.get('/family/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/family/:famId',  function(req, res) {
   var token = getToken(req.headers);
   if (token) { familyControl.get_family } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.delete('/family/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.delete('/family/:famId', function(req, res) {
   var token = getToken(req.headers);
   if (token) { familyControl.delete_family } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
@@ -69,21 +69,21 @@ router.delete('/family/:famId', passport.authenticate('jwt', { session: false}),
 //-------------------------------------------
 
 //caseWorker routes-------------------------------
-router.get('/worker', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/worker',function(req, res) {
   var token = getToken(req.headers);
   if (token) { workerControl.list_all_workers } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.post('/worker', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.post('/worker', function(req, res) {
   var token = getToken(req.headers);
   if (token) { workerControl.add_a_worker } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.get('/worker/:caseWorkerId', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/worker/:caseWorkerId',  function(req, res) {
   var token = getToken(req.headers);
   if (token) { workerControl.list_a_worker } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
@@ -92,21 +92,21 @@ router.get('/worker/:caseWorkerId', passport.authenticate('jwt', { session: fals
 //----------------------------------------------
 
 //Bill routes-----------------------------------------
-router.get('/bills', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/bills', function(req, res) {
   var token = getToken(req.headers);
   if (token) { billControl.list_all_bills } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.get('/bills', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/bills', function(req, res) {
   var token = getToken(req.headers);
   if (token) { billControl.add_a_bill } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 });
 
-router.get('/bills/:famId', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/bills/:famId',  function(req, res) {
   var token = getToken(req.headers);
   if (token) { billControl.list_someones_bills } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
@@ -115,7 +115,7 @@ router.get('/bills/:famId', passport.authenticate('jwt', { session: false}), fun
 //----------------------------------------------------
 
 //Text routes-------------------------------------------------
-router.get('/text/:primePhoneId', passport.authenticate('jwt', { session: false}), function(req, res) {
+router.get('/text/:primePhoneId', function(req, res) {
   var token = getToken(req.headers);
   if (token) { textControl.get_texts } else {
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
@@ -123,12 +123,12 @@ router.get('/text/:primePhoneId', passport.authenticate('jwt', { session: false}
 });
 //-----------------------------------------------------
 
-router.get('/U', passport.authenticate('jwt', { session: false}), function(req, res) {
-  var token = getToken(req.headers);
-  if (token) {  } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
-});
+// router.get('/U', passport.authenticate('jwt', { session: false}), function(req, res) {
+//   var token = getToken(req.headers);
+//   if (token) {  } else {
+//     return res.status(403).send({success: false, msg: 'Unauthorized.'});
+//   }
+// });
 
 //---------------------------------------------------
 
@@ -139,16 +139,21 @@ router.post('/signin', function(req, res) {
     if (err) throw err;
 
     if (!user) {
+      console.log('Not user ')
       res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
     } else {
       // check if password matches
-      user.comparePassword(req.body.password, function (err, isMatch) {
-        if (isMatch && !err) {
+      user.validPassword(req.body.password, function (err, isMatch) {
+        if (isMatch) {
+          console.log(isMatch);
+          console.log('eer')
+          console.log(err);
           // if user is found and password is right create a token
           var token = jwt.sign(user, config.secret);
           // return the information including token as JSON
           res.json({success: true, token: 'JWT ' + token});
         } else {
+          console.log('wrong pass')
           res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
       });
@@ -156,12 +161,6 @@ router.post('/signin', function(req, res) {
   });
 });
 
-router.get('/book', passport.authenticate('jwt', { session: false}), function(req, res) {
-  var token = getToken(req.headers);
-  if (token) {  } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
-});
 
 getToken = function (headers) {
   if (headers && headers.authorization) {

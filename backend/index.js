@@ -73,7 +73,7 @@ const textRoute=require('./routes/text');
 
 
 
-app.get('/',router)
+app.use('/',router)
 app.use(passport.initialize());
 app.use(passport.session());
 
