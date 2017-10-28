@@ -29,9 +29,3 @@ exports.add_a_worker = (req, res) => {
   })
   res.send({ success: true });
 }
-
-exports.update_a_worker = (req, res) => {
-  CaseWorker.find({ caseWorkerId: req.params.caseWorkerId }, (err, worker) => {
-
-  })
-}
