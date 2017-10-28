@@ -1,5 +1,5 @@
-const mongoose = require('mongoose'),
-  Family = mongoose.model('family');
+const mongoose = require('mongoose');
+var Family = mongoose.model('family');
 
 exports.list_all_families = function(req, res){
   Family.find({}, function(err, task){
