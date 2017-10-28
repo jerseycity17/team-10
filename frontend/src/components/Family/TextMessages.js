@@ -19,7 +19,7 @@ export class TextMessages extends React.Component {
 
     componentDidMount() {
       var self = this;
-      fetch("https://team10-184315.appspot.com/text/" + self.props.family.primaryPhone)
+      fetch("https://localhost:8080/text/" + self.props.family.primaryPhone)
         .then(res => res.json())
         .then(data => this.setState({
           messages: data
@@ -43,7 +43,7 @@ export class TextMessages extends React.Component {
 
     handleSubmit() {
       var self = this;
-      fetch("https://team10-184315.appspot.com/sendsms", {
+      fetch("https://localhost:8080/sendsms", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

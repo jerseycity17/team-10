@@ -98,7 +98,7 @@ export class NewFamily extends React.Component {
 
     handleSubmit() {
       var self = this;
-      fetch("https://team10-184315.appspot.com/family", {
+      fetch("https://localhost:8080/family", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
