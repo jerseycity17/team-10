@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema  = mongoose.Schema;
 
 const textSchema = new Schema({
-  _id: {
-    type: Number,
-    required: true
-  },
   primaryPhone: String,
   text: String
 });
 
-mongoose.model('text', textSchema);
+module.exports = mongoose.model('text', textSchema);

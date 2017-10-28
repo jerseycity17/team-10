@@ -3,31 +3,42 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const twilio = require('twilio');
 const passport = require('passport');
-const smsresponse= twilio.twiml.MessagingResponse;
+const smsresponse = twilio.twiml.MessagingResponse;
 const morgan = require('morgan');
-const bodyParser= require('body-parser');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys');
-const app = express():
-require('./models/User');
+const app = express();
+
+var user = require('./models/User');
 var Bill = require('./models/Bills');
-require('./models/CaseWorker');
-require('./models/Family');
+var worker = require('./models/CaseWorker');
+var family = require('./models/Family');
+var text = require('./models/Text')
+
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
-var twilioClient= new twilio(keys.TwilioSID,keys.Twiliotoken);
+var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
 
-<<<<<<< HEAD
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-app.post('/sms',(req,res)=>{
-  const number = req.from;
-  const message = req.body;
+
+
+app.post('/sms', (req, res) => {
+  const number = req.From;
+  const message = req.Body;
+  console.log(number);
+  console.log(message);
+  var newText = new text()
+  newText.primaryPhone = number;
+  newText.text = message;
+  newText.save(function(err) {
+    if (err)
+      console.log(err);
+  });
 
 });
-=======
->>>>>>> 53004f8bad021530cbc9b3048bf0d9046da41806
 //twilio set up
 
 //
