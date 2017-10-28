@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const twilio = require('twilio');
 const passport = require('passport');
-const smsresponse = twilio.twiml.MessagingResponse;
+
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys');
@@ -15,6 +15,7 @@ var worker = require('./models/CaseWorker');
 var family = require('./models/Family');
 var text = require('./models/Text')
 
+const smsresponse = twilio.twiml.MessagingResponse;
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
@@ -23,6 +24,11 @@ var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+
+
+//twilio set up
+
+
 
 app.use(
   cookieSession({
@@ -33,8 +39,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-require('./routes/sms')(app,smsresponse)
-
+require('./routes/sms')(app,twilioClient);
 require('./routes/authRoutes')(app);
 
 const PORT = process.env.PORT || 8080;
