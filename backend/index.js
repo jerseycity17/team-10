@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const twilio = require('twilio');
 const passport = require('passport');
 
@@ -20,6 +20,14 @@ const smsresponse = twilio.twiml.MessagingResponse;
 require('./services/passport')(passport);
 
 mongoose.connect(keys.mongoURI);
+
+
+app.use(session({
+    secret: keys.cookieKey, // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+
 
 function isLoggedIn(req, res, next) {
 
@@ -49,28 +57,28 @@ app.post('/bill', (req, res) => {
   });
 });
 
-app.route('/profile',isLoggedIn, familyRoute);
+
+app.get('/profile',isLoggedIn, familyRoute);
+app.get('/fail',(req,res)=>{
+  res.send('User or Password doesnt match. Please try again....')
+});
+app.get('/failsign',(req,res)=>{
+  res.send('User or Password already exist');
+});
 
 app.post('/login', passport.authenticate('local-login', {
   successRedirect: '/profile', // redirect to the secure profile section
-  failureRedirect: '/login', // redirect back to the signup page if there is an error
+  failureRedirect: '/fail', // redirect back to the signup page if there is an error
   failureFlash: true // allow flash messages
 }));
 
 
 app.post('/signup', passport.authenticate('local-signup', {
   successRedirect: '/profile', // redirect to the secure profile section
-  failureRedirect: '/signup', // redirect back to the signup page if there is an error
+  failureRedirect: '/failsign', // redirect back to the signup page if there is an error
   failureFlash: true // allow flash messages
 }));
 
-
-app.use(
-  cookieSession({
-    maxAge: (30 * 24 * 3600 * 1000),
-    keys: [keys.cookieKey]
-  })
-);
 
 app.use(passport.initialize());
 app.use(passport.session());
