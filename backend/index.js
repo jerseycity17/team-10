@@ -100,6 +100,6 @@ require('./routes/call')(app);
 require('./routes/family')(app);
 require('./routes/bill')(app);
 require('./routes/caseWorker')(app);
-
+require('./routes/text')(app);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
