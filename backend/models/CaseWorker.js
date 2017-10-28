@@ -5,7 +5,8 @@ const caseWorkerSchema = new Schema({
   caseWorkerId: Number,
   familyId: Number,
   affiliate: String,
-  price: Number
+  price: Number,
+  phone: String
 });
 
 module.exports = mongoose.model('caseWorker', caseWorkerSchema);

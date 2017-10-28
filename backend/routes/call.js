@@ -1,6 +1,5 @@
 const twilio = require('twilio');
 
-var user = require('../models/User');
 var Bill = require('../models/Bills');
 var worker = require('../models/CaseWorker');
 var family = require('../models/Family');
@@ -11,9 +10,24 @@ const syedNumber = "347-801-3874";
 module.exports = (app)=> {
   var twilioClient = new twilio(keys.TwilioSID, keys.Twiliotoken);
   app.post('/call', (req, res) => {
+
+    let number= "";
+    let caseId="";
+    family.find({phone: req.body.From}, (err, caseWorkerId) => {
+      if(err)
+        return console.log(err);
+      caseId=caseWorkerId.caseWorkerId;
+    });
+    worker.find({caseWorkerId: caseId}, (err, phone)=>{
+      if(err)
+        return console.log(err);
+      number=phone.phone;
+    });
+
     const response = new voiceResponse();
+
     const dial=response.dial();
-    dial.number(syedNumber);
+    dial.number(number||syedNumber);
     res.send(response.toString());
   });
 

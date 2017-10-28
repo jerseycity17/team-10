@@ -1,6 +1,6 @@
 const twilio = require('twilio');
 
-var user = require('../models/User');
+
 var Bill = require('../models/Bills');
 var worker = require('../models/CaseWorker');
 var family = require('../models/Family');
