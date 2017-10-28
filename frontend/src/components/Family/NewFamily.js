@@ -25,7 +25,7 @@ export class NewFamily extends React.Component {
           primaryPhone: "",
           secondaryPhone: "",
           email: "",
-          employment: "",
+          employment: 0,
           placeOfStay: "",
           graduated: "",
           visible: false };
@@ -98,7 +98,7 @@ export class NewFamily extends React.Component {
 
     handleSubmit() {
       var self = this;
-      fetch("http://localhost:8080/family", {
+      fetch("https://team10-184315.appspot.com/family", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -133,6 +133,7 @@ export class NewFamily extends React.Component {
                     <input onChange={this.onChangesecondaryPhone} placeholder="Secondary Phone"/>
                     <input onChange={this.onChangeemail} placeholder="Email"/>
                     <input onChange={this.onChangeplaceOfStay} placeholder="Place of Stay"/>
+                    <input onChange={this.onChangeemployment} placeholder="Employment"/>
                   </div>
                   <div>
                     <button className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>

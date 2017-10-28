@@ -19,7 +19,7 @@ export class TextMessages extends React.Component {
 
     componentDidMount() {
       var self = this;
-      fetch("http://localhost:8080/text/" + self.props.family.primaryPhone)
+      fetch("https://team10-184315.appspot.com/text/" + self.props.family.primaryPhone)
         .then(res => res.json())
         .then(data => this.setState({
           messages: data
@@ -43,7 +43,7 @@ export class TextMessages extends React.Component {
 
     handleSubmit() {
       var self = this;
-      fetch("http://localhost:8080/sendsms", {
+      fetch("https://team10-184315.appspot.com/sendsms", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -81,7 +81,7 @@ export class TextMessages extends React.Component {
                         <input onChange={this.onChange} id="msg" type="text" class="form-control" name="msg" placeholder="Send Message"/>
                       </div>
                       <div className="col-md-4">
-                        <button style={{width: 200}} onClick={this.handleSubmit} style={{padding: 4}}>Send</button>
+                        <button style={{width: 200}} onClick={this.handleSubmit} style={{padding: 4}}><i className="fa fa-paper-plane" aria-hidden="true"></i>Send</button>
                       </div>
                     </div>
                   </div>
