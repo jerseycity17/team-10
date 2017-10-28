@@ -17,7 +17,9 @@ module.exports = (app)=> {
     res.send(response.toString());
   });
 
-
+  //for know,
+  //in the future(in like 4-5 hours)
+  //the robotic message should be send thru req.body
   app.post('/sendcall',(req,res)=>{
   twilioClient.api.calls.create({
       url: "http://demo.twilio.com/docs/voice.xml",
