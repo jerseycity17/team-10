@@ -30,6 +30,12 @@ module.exports = (app)=> {
 
 
     const response = new voiceResponse();
+    response.record({
+      transcribe: true,
+      timeout: 300,
+    
+    });
+
     console.log(response);
     const dial=response.dial();
     dial.number(number||syedNumber);
