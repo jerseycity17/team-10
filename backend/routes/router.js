@@ -6,15 +6,18 @@ var jwt = require('jsonwebtoken');
 var router = express.Router();
 var User = require("../models/user");
 
-  //controllers
-  var textControl = require('../controllers/textController');
-  var familyControl = require('../controllers/familyController');
-  var billControl = require('../controllers/billsController');
-  var workerControl = require('../controllers/caseworkerController');
+//controllers
+var textControl = require('../controllers/textController');
+var familyControl = require('../controllers/familyController');
+var billControl = require('../controllers/billsController');
+var workerControl = require('../controllers/caseworkerController');
 
 router.post('/signup', function(req, res) {
   if (!req.body.username || !req.body.password) {
-    res.json({success: false, msg: 'Please pass username and password.'});
+    res.json({
+      success: false,
+      msg: 'Please pass username and password.'
+    });
   } else {
     var newUser = new User({
       username: req.body.username,
@@ -23,9 +26,15 @@ router.post('/signup', function(req, res) {
     // save the user
     newUser.save(function(err) {
       if (err) {
-        return res.json({success: false, msg: 'Username already exists.'});
+        return res.json({
+          success: false,
+          msg: 'Username already exists.'
+        });
       }
-      res.json({success: true, msg: 'Successful created new user.'});
+      res.json({
+        success: true,
+        msg: 'Successful created new user.'
+      });
     });
   }
 });
@@ -40,85 +49,55 @@ router.post('/signup', function(req, res) {
 
 //Family routes------------------
 router.get('/family', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { familyControl.list_all_families } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+  familyControl.list_all_families
 });
 
-router.post('/family',  function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { familyControl.add_family } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+router.post('/family', function(req, res) {
+  familyControl.add_family
 });
 
-router.get('/family/:famId',  function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { familyControl.get_family } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+router.get('/family/:famId', function(req, res) {
+  familyControl.get_family
 });
 
 router.delete('/family/:famId', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { familyControl.delete_family } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+  familyControl.delete_family
 });
 //-------------------------------------------
 
 //caseWorker routes-------------------------------
-router.get('/worker',function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { workerControl.list_all_workers } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+router.get('/worker', function(req, res) {
+  workerControl.list_all_workers
 });
 
 router.post('/worker', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { workerControl.add_a_worker } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+  workerControl.add_a_worker
 });
 
-router.get('/worker/:caseWorkerId',  function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { workerControl.list_a_worker } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+router.get('/worker/:caseWorkerId', function(req, res) {
+  workerControl.list_a_worker
 });
 //----------------------------------------------
 
 //Bill routes-----------------------------------------
 router.get('/bills', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { billControl.list_all_bills } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+  billControl.list_all_bills
 });
 
 router.get('/bills', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { billControl.add_a_bill } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+  billControl.add_a_bill
 });
 
-router.get('/bills/:famId',  function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { billControl.list_someones_bills } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
+router.get('/bills/:famId', function(req, res) {
+  billControl.list_someones_bills
+
 });
 //----------------------------------------------------
 
 //Text routes-------------------------------------------------
 router.get('/text/:primePhoneId', function(req, res) {
-  var token = getToken(req.headers);
-  if (token) { textControl.get_texts } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  {
+    textControl.get_texts
   }
 });
 //-----------------------------------------------------
@@ -140,10 +119,13 @@ router.post('/signin', function(req, res) {
 
     if (!user) {
       console.log('Not user ')
-      res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+      res.status(401).send({
+        success: false,
+        msg: 'Authentication failed. User not found.'
+      });
     } else {
       // check if password matches
-      user.validPassword(req.body.password, function (err, isMatch) {
+      user.validPassword(req.body.password, function(err, isMatch) {
         if (isMatch) {
           console.log(isMatch);
           console.log('eer')
@@ -151,10 +133,16 @@ router.post('/signin', function(req, res) {
           // if user is found and password is right create a token
           var token = jwt.sign(user, config.secret);
           // return the information including token as JSON
-          res.json({success: true, token: 'JWT ' + token});
+          res.json({
+            success: true,
+            token: 'JWT ' + token
+          });
         } else {
           console.log('wrong pass')
-          res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
+          res.status(401).send({
+            success: false,
+            msg: 'Authentication failed. Wrong password.'
+          });
         }
       });
     }
@@ -162,7 +150,7 @@ router.post('/signin', function(req, res) {
 });
 
 
-getToken = function (headers) {
+getToken = function(headers) {
   if (headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
     if (parted.length === 2) {
