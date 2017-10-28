@@ -24,32 +24,6 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
-
-app.post('/sms', (req, res) => {
-  const number = req.From;
-  const message = req.Body;
-  console.log(number);
-  console.log(message);
-  var newText = new text()
-  newText.primaryPhone = number;
-  newText.text = message;
-  newText.save(function(err) {
-    if (err)
-      console.log(err);
-  });
-
-});
-//twilio set up
-
-//
-// twilioClient.messages.create({
-//     body: 'Hello from Node',
-//     to: '+19294351864',  // Text this number
-//     from: keys.number
-// })
-// .then((message) => console.log(message.sid));
-
-
 app.use(
   cookieSession({
     maxAge: (30 * 24 * 3600 * 1000),
@@ -59,6 +33,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+require('./routes/sms')(app,smsresponse)
 
 require('./routes/authRoutes')(app);
 
