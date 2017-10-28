@@ -21,8 +21,13 @@ module.exports = (app)=> {
   //in the future(in like 4-5 hours)
   //the robotic message should be send thru req.body
   app.post('/sendcall',(req,res)=>{
-  twilioClient.api.calls.create({
-      url: "http://demo.twilio.com/docs/voice.xml",
+    console.log(req.body.text);
+    let message =req.body.text;
+    message=message.replace(/ /g,"%20");
+    const xmlURL= ['http://twimlets.com/echo?Twiml=%3CResponse%3E%0A%3CSay%20voice%3D%22alice%22%3E','%3C%2FSay%3E%0A%3C%2FResponse%3E&'];
+    const finalxml=xmlURL[0]+message+xmlURL[1];
+    twilioClient.api.calls.create({
+      url: finalxml,
       to: req.body.phone,  // Text this number
       from: keys.number
   })
