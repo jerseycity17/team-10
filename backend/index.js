@@ -5,6 +5,7 @@ const twilio = require('twilio');
 const passport = require('passport');
 
 const keys = require('./config/keys');
+require('./models/User');
 require('./models/Bills');
 require('./models/CaseWorker');
 require('./models/Family');
