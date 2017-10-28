@@ -9,24 +9,34 @@ const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 const app = express();
 
-var user = require('./models/User');
-var Bill = require('./models/Bills');
-var worker = require('./models/CaseWorker');
-var family = require('./models/Family');
-var text = require('./models/Text')
-
+const user = require('./models/User');
+const Bill = require('./models/Bills');
+const worker = require('./models/CaseWorker');
+const family = require('./models/Family');
+const text = require('./models/Text')
+const familyRoute= require('./routes/family');
 const smsresponse = twilio.twiml.MessagingResponse;
-require('./services/passport');
+
+require('./services/passport')(passport);
 
 mongoose.connect(keys.mongoURI);
 
+function isLoggedIn(req, res, next) {
+
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated())
+    return next();
+
+  // if they aren't redirect them to the home page
+  res.send('ERROR::::: You are not Logged in ');
+};
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
 app.post('/bill', (req, res) => {
-  var newBill = new Bill();
+  const newBill = new Bill();
   newBill.familyId = req.body.familyId;
   newBill.bill = req.body.bill;
   newBill.price = req.body.price;
@@ -39,7 +49,7 @@ app.post('/bill', (req, res) => {
   });
 });
 
-
+app.route('/profile',isLoggedIn, familyRoute);
 
 app.post('/login', passport.authenticate('local-login', {
   successRedirect: '/profile', // redirect to the secure profile section
@@ -66,8 +76,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./routes/sms')(app);
 require('./routes/call')(app);
-require('./routes/authRoutes')(app);
-require('./routes/family')(app);
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
