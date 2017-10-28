@@ -7,9 +7,13 @@ const smsresponse= twilio.twiml.MessagingResponse;
 const morgan = require('morgan');
 const bodyParser= require('body-parser');
 const keys = require('./config/keys');
-//require('./models/User');
-//require('./services/passport');
-const app = express();
+const app = express():
+require('./models/User');
+require('./models/Bills');
+require('./models/CaseWorker');
+require('./models/Family');
+require('./services/passport');
+
 mongoose.connect(keys.mongoURI);
 var twilioClient= new twilio(keys.TwilioSID,keys.Twiliotoken);
 
@@ -19,7 +23,7 @@ app.use(bodyParser.json());
 app.post('/sms',(req,res)=>{
   const number = req.from;
   const message = req.body;
-  
+
 });
 //twilio set up
 
