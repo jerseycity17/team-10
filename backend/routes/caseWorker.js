@@ -1,4 +1,7 @@
-module.exports = function(app) {
+const express =require('express');
+const app = express();
+
+module.exports = ()=> {
   var workerControl = require('../controllers/caseworkerController');
 
   app.route('/worker')

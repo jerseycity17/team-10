@@ -1,4 +1,7 @@
-module.exports = function(app) {
+const express =require('express');
+const app = express();
+
+module.exports = () => {
   var billControl = require('../controllers/billsController');
 
   app.route('/bills')

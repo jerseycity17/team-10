@@ -1,4 +1,7 @@
-module.exports = function(app) {
+const express =require('express');
+const app = express();
+
+module.exports = ()=> {
   var familyControl = require('../controllers/familyController');
 
   app.route('/family')

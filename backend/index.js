@@ -9,12 +9,8 @@ const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 const app = express();
 
-const user = require('./models/User');
-const Bill = require('./models/Bills');
-const worker = require('./models/CaseWorker');
-const family = require('./models/Family');
-const text = require('./models/Text')
-const familyRoute= require('./routes/family');
+
+
 const smsresponse = twilio.twiml.MessagingResponse;
 
 require('./services/passport')(passport);
@@ -40,17 +36,11 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./routes/sms')(app);
+require('./routes/call')(app);
 
-
-function isLoggedIn(req, res, next) {
-
-  // if user is authenticated in the session, carry on
-  if (req.isAuthenticated())
-    return next();
-
-  // if they aren't redirect them to the home page
-  res.send('ERROR::::: You are not Logged in ');
-};
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded());
@@ -70,36 +60,112 @@ app.post('/bill', (req, res) => {
   });
 });
 
+const familyRoute= require('./routes/family');
+const billRoute=require('./routes/bill');
+const caseRoute=require('./routes/caseWorker');
+const textRoute=require('./routes/text');
 
-app.get('/profile',isLoggedIn, familyRoute);
-app.get('/fail',(req,res)=>{
-  res.send('User or Password doesnt match. Please try again....')
+
+
+app.use('/profile',isLoggedIn, familyRoute);
+app.use('/bill',isLoggedIn, billRoute);
+app.use('/caseRoute',isLoggedIn, caseRoute);
+app.use('/textRoute',isLoggedIn, textRoute);
+
+var mongoose = require('mongoose');
+var passport = require('passport');
+var config = require('../config/database');
+require('../config/passport')(passport);
+var express = require('express');
+var jwt = require('jsonwebtoken');
+var router = express.Router();
+var User = require("../models/user");
+var Book = require("../models/book");
+
+router.post('/signup', function(req, res) {
+  if (!req.body.username || !req.body.password) {
+    res.json({success: false, msg: 'Please pass username and password.'});
+  } else {
+    var newUser = new User({
+      username: req.body.username,
+      password: req.body.password
+    });
+    // save the user
+    newUser.save(function(err) {
+      if (err) {
+        return res.json({success: false, msg: 'Username already exists.'});
+      }
+      res.json({success: true, msg: 'Successful created new user.'});
+    });
+  }
 });
-app.get('/failsign',(req,res)=>{
-  res.send('User or Password already exist');
+
+router.post('/signin', function(req, res) {
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
+    if (err) throw err;
+
+    if (!user) {
+      res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+    } else {
+      // check if password matches
+      user.comparePassword(req.body.password, function (err, isMatch) {
+        if (isMatch && !err) {
+          // if user is found and password is right create a token
+          var token = jwt.sign(user, config.secret);
+          // return the information including token as JSON
+          res.json({success: true, token: 'JWT ' + token});
+        } else {
+          res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
+        }
+      });
+    }
+  });
 });
 
-app.post('/login', passport.authenticate('local-login', {
-  successRedirect: '/profile', // redirect to the secure profile section
-  failureRedirect: '/fail', // redirect back to the signup page if there is an error
-  failureFlash: true // allow flash messages
-}));
+router.post('/book', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) {
+    console.log(req.body);
+    var newBook = new Book({
+      isbn: req.body.isbn,
+      title: req.body.title,
+      author: req.body.author,
+      publisher: req.body.publisher
+    });
+    newBook.save(function(err) {
+      if (err) {
+        return res.json({success: false, msg: 'Save book failed.'});
+      }
+      res.json({success: true, msg: 'Successful created new book.'});
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
 
 
-app.post('/signup', passport.authenticate('local-signup', {
-  successRedirect: '/profile', // redirect to the secure profile section
-  failureRedirect: '/failsign', // redirect back to the signup page if there is an error
-  failureFlash: true // allow flash messages
-}));
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+module.exports = router;
+
 
 
 app.use(passport.initialize());
 app.use(passport.session());
-require('./routes/sms')(app);
-require('./routes/call')(app);
-require('./routes/family')(app);
-require('./routes/bill')(app);
-require('./routes/caseWorker')(app);
-require('./routes/text')(app);
+
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
