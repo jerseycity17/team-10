@@ -14,7 +14,7 @@ const Bill = require('./models/Bills');
 const worker = require('./models/CaseWorker');
 const family = require('./models/Family');
 const text = require('./models/Text')
-const familyRoute= require('./routes/family')b/////;
+const familyRoute= require('./routes/family');
 const smsresponse = twilio.twiml.MessagingResponse;
 
 require('./services/passport')(passport);
