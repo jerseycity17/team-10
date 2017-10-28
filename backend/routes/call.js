@@ -14,12 +14,9 @@ module.exports = (app)=> {
 
     let number= "";
     let caseId="";
-
-
     //The function below will search for the case worker of whos calling
     //if it cant find one, it will call a default number
     //which in this case is the variable syedNumber
-
     family.find({phone: req.body.From}, (err, caseWorkerId) => {
       if(err)
         return console.log(err);

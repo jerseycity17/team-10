@@ -4,13 +4,13 @@ require('../services/passport')(passport);
 var express = require('express');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
-var User = require("../models/user");
 
-//controllers
-var textControl = require('../controllers/textController');
-var familyControl = require('../controllers/familyController');
-var billControl = require('../controllers/billsController');
-var workerControl = require('../controllers/caseworkerController');
+var Bills =require('../models/Bills');
+var CaseWorker = require('../models/CaseWorker');
+var User = require("../models/user");
+var Family =require('../models/Family');
+var Text = require('../models/Text');
+
 
 router.post('/signup', function(req, res) {
   if (!req.body.username || !req.body.password) {
@@ -49,56 +49,115 @@ router.post('/signup', function(req, res) {
 
 //Family routes------------------
 router.get('/family', function(req, res) {
-  familyControl.list_all_families
+  Family.find({}, function(err, task) {
+    if (err) return console.log(err);
+    res.send(task);
+  });
 });
 
 router.post('/family', function(req, res) {
-  familyControl.add_family
+  var newFamily = new Family();
+  newFamily.caseWorkerId = req.body.caseWorkerId;
+  newFamily.houseHead = req.body.houseHead;
+  newFamily.primaryPhone = req.body.primaryPhone;
+  newFamily.secondaryPhone = req.body.secondaryPhone;
+  newFamily.email = req.body.email;
+  newFamily.employment = req.body.employment;
+  newFamily.placeOfStay = req.body.placeOfStay;
+  newFamily.graduated = req.body.graduated;
+
+  newFamily.save(function(err) {
+    if (err) return console.log(err);
+  });
+  res.send({
+    success: true
+  });
 });
 
 router.get('/family/:famId', function(req, res) {
-  familyControl.get_family
+  Family.find( {houseHead: req.params.houseHead}, function(err, task){
+    if(err) return console.log(err);
+    res.send(task);
+  });
 });
 
 router.delete('/family/:famId', function(req, res) {
-  familyControl.delete_family
+  Family.find({houseHead: req.params.famId}, function(err, task){
+    if(err) return console.log(err);
+    res.send(task);
+  });
 });
 //-------------------------------------------
 
 //caseWorker routes-------------------------------
 router.get('/worker', function(req, res) {
-  workerControl.list_all_workers
+  CaseWorker.find({}, (err, workers) => {
+    if(err)
+      return console.log(err);
+    res.send(workers);
+  });
 });
 
 router.post('/worker', function(req, res) {
-  workerControl.add_a_worker
+  var newWorker = new CaseWorker();
+  newWorker.caseWorkerId = req.body.caseWorkerId;
+  newWorker.familyId = req.body.familyId;
+  newWorker.affiliate = req.body.affiliate;
+  newWorker.price = req.body.price;
+  newWorker.save(err => {
+    if(err)
+      return console.log(err);
+  })
+  res.send({ success: true });
+
 });
 
 router.get('/worker/:caseWorkerId', function(req, res) {
-  workerControl.list_a_worker
+  CaseWorker.find({ caseWorkerId: req.params.caseWorkerId }, (err, worker) => {
+    if(err)
+      return console.log(err);
+    res.send(worker);
+      });
 });
 //----------------------------------------------
 
 //Bill routes-----------------------------------------
 router.get('/bills', function(req, res) {
-  billControl.list_all_bills
+  Bills.find({}, (err, bills) => {
+    if(err)
+      return console.log(err);
+    res.send(bills);
+  });
 });
 
 router.get('/bills', function(req, res) {
-  billControl.add_a_bill
+  var newBill = new Bill();
+  newBill.familyId = req.body.familyId;
+  newBill.bill = req.body.bill;
+  newBill.price = req.body.price;
+  newBill.save(err => {
+    if(err)
+      return console.log(err);
+  })
+  res.send({ success: true });
 });
 
 router.get('/bills/:famId', function(req, res) {
-  billControl.list_someones_bills
+  Bills.find({familyId: req.params.famId}, (err, bills) => {
+    if(err)
+      return console.log(err);
+    res.send(bills);
+  });
 
 });
 //----------------------------------------------------
 
 //Text routes-------------------------------------------------
 router.get('/text/:primePhoneId', function(req, res) {
-  {
-    textControl.get_texts
-  }
+  Text.find( {primaryPhone: req.params.primePhoneId}, function(err, task){
+    if(err) return console.log(err);
+    res.send(task);
+  });
 });
 //-----------------------------------------------------
 
