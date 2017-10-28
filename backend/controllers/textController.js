@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-var Text = mongoose.model('text');
+var Text = require('../models/Text');
 
 exports.get_texts = function(req, res){
   Text.find( {primaryPhone: req.params.primePhoneId}, function(err, task){

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-var Bills = mongoose.model('bills');
+var Bills =require('../models/Bills');
 
 exports.list_all_bills = (req, res) => {
   Bills.find({}, (err, bills) => {

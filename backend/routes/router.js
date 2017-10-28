@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var passport = require('passport');
-var config = require('../config/database');
-require('../config/passport')(passport);
+require('../services/passport')(passport);
 var express = require('express');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
@@ -31,13 +30,13 @@ router.post('/signup', function(req, res) {
   }
 });
 
-
-router.get('/URL', passport.authenticate('jwt', { session: false}), function(req, res) {
-  var token = getToken(req.headers);
-  if (token) {  } else {
-    return res.status(403).send({success: false, msg: 'Unauthorized.'});
-  }
-});
+// Template //
+// router.get('/URL', passport.authenticate('jwt', { session: false}), function(req, res) {
+//   var token = getToken(req.headers);
+//   if (token) {  } else {
+//     return res.status(403).send({success: false, msg: 'Unauthorized.'});
+//   }
+// });
 
 //Family routes------------------
 router.get('/family', passport.authenticate('jwt', { session: false}), function(req, res) {

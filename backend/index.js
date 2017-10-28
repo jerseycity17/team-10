@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 const app = express();
 
-
+const router=require('./routes/router');
 
 const smsresponse = twilio.twiml.MessagingResponse;
 
@@ -38,7 +38,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 
 app.use(morgan('dev'));
@@ -74,7 +73,7 @@ const textRoute=require('./routes/text');
 
 
 
-
+app.get('/',router)
 app.use(passport.initialize());
 app.use(passport.session());
 

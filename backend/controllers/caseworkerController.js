@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-var CaseWorker = mongoose.model('caseWorker');
+var CaseWorker = require('../models/CaseWorker');
 
 exports.list_all_workers = (req, res) => {
   CaseWorker.find({}, (err, workers) => {
