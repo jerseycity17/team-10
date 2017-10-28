@@ -84,7 +84,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./routes/sms')(app);
 require('./routes/call')(app);
-require('./routes/family');
+require('./routes/family')(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
