@@ -1,0 +1,27 @@
+.card-5 {
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+.card-5:hover {
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  border-radius: 0px;
+  color: #5BC0DE;
+  cursor: pointer;
+}
+
+.login {
+  height: 500px;
+  margin: 0 auto;
+  width: 80%;
+  color: #5BC0DE;
+}
+
+.logout {
+  color: 'red';
+}
+
+.welcome {
+  font-family: 'Raleway', sans-serif;
+}

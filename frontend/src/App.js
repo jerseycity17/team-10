@@ -1,19 +1,27 @@
-// in src/App.js
-import Dashboard from './Dashboard';
-import authClient from './authClient';
-import React from 'react';
-import { Admin, Resource } from 'admin-on-rest';
+// ./src/App.js
+import { Route } from 'react-router-dom';
+import React, { Component } from 'react';
+import Subscribe from './pages/Subscribe'
+import ThankYou from './pages/ThankYou'
+import ThirdPage from './pages/ThirdPage'
+import PageShell from './components/PageShell'
+import Header from './components/Header/Header';
+import {Family} from './components/Family/Family';
+import FamilyPage from './pages/FamilyPage';
+import Login from './pages/Login';
 
-import { PostList, PostShow } from './posts';
-import { FamilyList, FamilyShow } from './family';
-import restClient from './restClient'
-
-import FamilyIcon from 'material-ui/svg-icons/social/group';
-
-const App = () => (
-    <Admin title="Family Promise Admin" authClient = {authClient} restClient={restClient('http://localhost:8080')}>
-        <Resource name="family" list={FamilyList} show={FamilyShow} icon={FamilyIcon}/>
-    </Admin>
-);
-
+class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div className="App container-fluid">
+        <Route path="/login" exact component={PageShell(Login)}></Route>
+        <Route path="/" exact component={PageShell(Login)}></Route>
+        <Route path="/family" exact component={PageShell(FamilyPage)}></Route>
+      </div>
+    );
+  }
+}
 export default App;
